@@ -13,3 +13,7 @@ cp -R lab-skill/skills/context-handoff ~/.agents/skills/
 ```
 
 For Claude Code, copy the folder to `~/.claude/skills/` instead. Restart the tool, then ask it to use the `context-handoff` skill. The repository requires GitHub access and a registered SSH key for the clone command above.
+
+## Fetch paper
+
+[fetch-paper](skills/fetch-paper/SKILL.md) finds open-access PDF copies by DOI. Copy `skills/fetch-paper` into the appropriate skills directory and see its [usage guide](skills/fetch-paper/references.md) for email and API-key requirements.
