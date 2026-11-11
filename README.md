@@ -17,3 +17,7 @@ For Claude Code, copy the folder to `~/.claude/skills/` instead. Restart the too
 ## Fetch paper
 
 [fetch-paper](skills/fetch-paper/SKILL.md) finds open-access PDF copies by DOI. Copy `skills/fetch-paper` into the appropriate skills directory and see its [usage guide](skills/fetch-paper/references.md) for email and API-key requirements.
+
+## Lab wiki
+
+[lab-wiki](skills/lab-wiki/SKILL.md) reconstructs project context from the lab wiki and follows its current rules for updates. Copy `skills/lab-wiki` into the appropriate skills directory. A user needs access to the wiki repository and can set `PGL_WIKI` to an existing local clone.
