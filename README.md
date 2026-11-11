@@ -16,11 +16,11 @@ For Claude Code, copy the folder to `~/.claude/skills/` instead. Restart the too
 
 ## Fetch paper
 
-[fetch-paper](skills/fetch-paper/SKILL.md) finds open-access PDF copies by DOI. Copy `skills/fetch-paper` into the appropriate skills directory and see its [usage guide](skills/fetch-paper/references.md) for email and API-key requirements.
+[fetch-paper](skills/fetch-paper/SKILL.md) finds open-access PDF copies by DOI, **checking PubMed Central open access first** (PDF plus full-text XML/TXT, no key needed). Copy `skills/fetch-paper` into the appropriate skills directory and see its [usage guide](skills/fetch-paper/references.md) for email and API-key requirements.
 
 ## Paste to Markdown
 
-[paste-to-md](skills/paste-to-md/SKILL.md) turns pasted text, URLs, DOIs or PDF links into Markdown files with their source, license and reading scope recorded. It keeps the user's own text verbatim, summarizes third-party sources, falls back to Europe PMC or the Internet Archive when a site blocks automated access, and marks paywalled sources as not read. With the lab wiki, it follows the `lab-wiki` skill for placement, links and logs. Copy `skills/paste-to-md` into the appropriate skills directory.
+[paste-to-md](skills/paste-to-md/SKILL.md) turns pasted text, URLs, DOIs or PDF links into Markdown files with their source, license and reading scope recorded. It keeps the user's own text verbatim, summarizes third-party sources, reads journal articles from PubMed Central open access first, falls back to Europe PMC or the Internet Archive when a site blocks automated access, and marks paywalled sources as not read. With the lab wiki, it follows the `lab-wiki` skill for placement, links and logs. Copy `skills/paste-to-md` into the appropriate skills directory.
 
 ## Lab wiki
 

@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Retrieve an open-access PDF associated with a DOI."""
+"""Retrieve an open-access PDF associated with a DOI.
+
+PubMed Central (PMC) open access is checked first: the PMC ID converter maps the
+DOI to a PMCID, and the PDF comes from the PMC Article Datasets bucket
+(pmc-oa-opendata on AWS), which also holds the full-text .xml/.txt.
+"""
 import argparse
 import json
 import os
@@ -10,6 +15,8 @@ from urllib.parse import quote, urlencode
 from urllib.request import Request, urlopen
 
 LIMIT = 100 * 1024 * 1024
+IDCONV = "https://pmc.ncbi.nlm.nih.gov/tools/idconv/api/v1/articles/"
+PMC_OA = "https://pmc-oa-opendata.s3.amazonaws.com/"
 
 
 def request(url, headers=None):
@@ -34,6 +41,10 @@ def main():
     encoded = quote(doi, safe="")
     candidates = []
     sources = []
+    idconv = {"ids": doi, "format": "json", "tool": "lab-skill-fetch-paper"}
+    if args.email:
+        idconv["email"] = args.email
+    sources.append(("PubMed Central OA", IDCONV + "?" + urlencode(idconv), {}))
     if args.email:
         sources.append(("Unpaywall", "https://api.unpaywall.org/v2/" + encoded + "?" + urlencode({"email": args.email}), {}))
     else:
@@ -48,7 +59,23 @@ def main():
     for name, url, headers in sources:
         try:
             obj = json.loads(request(url, headers))
-            if name == "Unpaywall":
+            if name == "PubMed Central OA":
+                pmcid = ((obj.get("records") or [{}])[0]).get("pmcid")
+                if not pmcid:
+                    print(f"{name}: not in PMC (no PMCID for this DOI)", file=sys.stderr)
+                    continue
+                listing = request(PMC_OA + "?" + urlencode({"list-type": "2", "prefix": pmcid + "."})).decode()
+                keys = re.findall(r"<Key>([^<]+)</Key>", listing)
+                versions = sorted({k.split("/")[0] for k in keys}, key=lambda v: int(v.rsplit(".", 1)[1]))
+                if not versions:
+                    print(f"{name}: {pmcid} is in PMC but not in the open-access dataset", file=sys.stderr)
+                    continue
+                ver = versions[-1]
+                for ext in ("xml", "txt"):
+                    if f"{ver}/{ver}.{ext}" in keys:
+                        print(f"{name}: full text {ext.upper()}: {PMC_OA}{ver}/{ver}.{ext}", file=sys.stderr)
+                candidates = [(PMC_OA + f"{ver}/{ver}.pdf", f"PMC open access {ver}")] if f"{ver}/{ver}.pdf" in keys else []
+            elif name == "Unpaywall":
                 locations = [obj.get("best_oa_location") or {}] + (obj.get("oa_locations") or [])
                 candidates = [(x.get("url_for_pdf"), x.get("version")) for x in locations]
             elif name == "OpenAlex":
