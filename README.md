@@ -14,6 +14,10 @@ cp -R lab-skill/skills/context-handoff ~/.agents/skills/
 
 For Claude Code, copy the folder to `~/.claude/skills/` instead. Restart the tool, then ask it to use the `context-handoff` skill. The repository requires GitHub access and a registered SSH key for the clone command above.
 
+## PubMed Central open access (use first)
+
+[pmc-oa](skills/pmc-oa/SKILL.md) is the first stop for any journal article: give it DOIs, PMIDs or PMCIDs and it downloads the PubMed Central open-access full text (XML, TXT, PDF, optionally figures and supplements) from the PMC Article Datasets on AWS, verifies md5, and reports license, author-manuscript and retraction status. No key or login is needed. Copy `skills/pmc-oa` into the appropriate skills directory.
+
 ## Fetch paper
 
 [fetch-paper](skills/fetch-paper/SKILL.md) finds open-access PDF copies by DOI, **checking PubMed Central open access first** (PDF plus full-text XML/TXT, no key needed). Copy `skills/fetch-paper` into the appropriate skills directory and see its [usage guide](skills/fetch-paper/references.md) for email and API-key requirements.
